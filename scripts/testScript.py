@@ -1,33 +1,25 @@
 import os
 import subprocess
 import time
-from shlex import shlex
+import shlex
 
 pw = 'hello'
-pwAuth = f'sshpass -p {pw}'
-script = ''
+pwAuth = f'sshpass -p "{pw}"'
+script = 'paramTest03182024.py'
 
 def filecounter():
     command = 'sudo python3 countCurrentTest.py'
-    return int(subprocess.check_output(f'{pwAuth} ssh pi@raspberrypiednaregina.local {command}'))
+    output = subprocess.check_output(shlex.split(f'{pwAuth} ssh pi@raspberrypiednaregina.local "{command}"'))
+    return int(output.decode("utf-8"))
 
 def start():
-    pw = 'hello'
-    init_fc = filecounter()
-    sshCommand = f'sudo python3 {script}; exit'
+    subprocess.run(f'{pwAuth} scp scripts/{script} pi@raspberrypiednaregina.local:~/Sp24Scripts', shell= True)
+    sshCommand = f'sudo python3 Sp24Scripts/{script}; disown top; exit'
     command = shlex.split(f'{pwAuth} ssh pi@raspberrypiednaregina.local {sshCommand}')
-    capture = subprocess.POpen(command)
-    for i in range(1):    
-        time.sleep(60)
-        if filecounter() == init_fc:
-            print('error')
-            capture.kill()
-            subprocess.run('python3 fileTransfer.py')
+    capture = subprocess.Popen(command)
     while capture.poll() is None:
         time.sleep(1)
-    subprocess.run('python3 fileTransfer.py')
+    print("exited")
+    subprocess.run('python3 scripts/fileTransfer.py', shell= True)
 
-cwd = os.getcwd()
-os.chdir('~/School/Sp24/PIPackage')
 start()
-os.chdir(cwd)

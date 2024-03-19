@@ -14,7 +14,7 @@ def filecounter():
 
 def start():
     subprocess.run(f'{pwAuth} scp scripts/{script} pi@raspberrypiednaregina.local:~/Sp24Scripts', shell= True)
-    sshCommand = f'sudo python3 Sp24Scripts/{script}; disown top; exit'
+    sshCommand = f'sudo python3 Sp24Scripts/{script}; paramTest03182024.pyexit'
     command = shlex.split(f'{pwAuth} ssh pi@raspberrypiednaregina.local {sshCommand}')
     capture = subprocess.Popen(command)
     while capture.poll() is None:

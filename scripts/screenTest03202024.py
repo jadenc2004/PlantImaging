@@ -3,7 +3,7 @@ import subprocess
 from datetime import datetime
 import time
 
-def setCommand(camera: int, path: str, frames=3, brightness=0, contrast=60, focus = 98):
+def setCommand(camera: int, path: str, idx: int, frames=3, brightness=0, contrast=60, focus = 98):
     '''
     sets the command to be executed by subprocess pOpen
     '''
@@ -22,7 +22,7 @@ def setCommand(camera: int, path: str, frames=3, brightness=0, contrast=60, focu
             '-s', f'Focus (absolute)={focus}%',
             '-s', 'Backlight Compensation=2',
             '--no-banner',
-            f'{path}/images_{datetime.now().strftime("%m%d%Y_%H:%M")}.jpg']
+            f'{path}/images_{camera}_{datetime.now().strftime("%H:%M")}_{idx}.jpg']
     return command
 
 def findVolumePath():
@@ -42,20 +42,15 @@ def findVolumePath():
         return "/home/pi/Documents/"
 
 def startTest():
-    start = time.time()
     volumePath = findVolumePath()
-    folderPath = os.path.join(volumePath,f'edna_testStart_{datetime.now().strftime("%m%d%Y")}')
-    cameraPaths = []
-    for i in range(3):
-        path = os.path.join(folderPath, f'camera_{2*i}')
-        cameraPaths.append(path)
-        os.makedirs(path, exist_ok=True)
-    while (time.time() - start < 60*60*24*5): # 5 day trial
+    folderPath = os.path.join(volumePath,f'edna_{datetime.now().strftime("%m%d%Y")}')
+    os.makedirs(folderPath,exist_ok=True)
+    for i in range(20):
         for j in range(3):
             camera = 2*j
             mainRun = setCommand(camera=camera,
-                                 path=cameraPaths[j])
+                                 path=folderPath,
+                                 idx= i)
             subprocess.Popen(mainRun)
-        time.sleep(60*10) # every 10 mins
-
+        time.sleep(2)
 startTest()

@@ -12,7 +12,7 @@ class Pi(Enum):
     NAOMI = [f'pi@raspberrypinaomi.local:/media/pi/DISK2_IMG/naomi_{date}',
              'jennlewis', # replace with pw
             (i*2 for i in range(5))]
-    EDNA = [f'pi@raspberrypiEdnaRegina.local:/media/pi/4C28-95CB1/CR_Folder/edna_{date}',
+    EDNA = [f'pi@raspberrypiEdnaRegina.local:/media/pi/4C28-95CB1/CR_Folder/edna_testStart_{date}',
             'hello', # replace with pw
             (i*2 for i in range(3))]
 
